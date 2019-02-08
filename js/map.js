@@ -1,30 +1,51 @@
+/* global document: false */
 let dataAd = {
-  COUNT: 8,
+  COUNT: 20,
   AVATAR_NUM_MIN_MAX: [1, 8],
-  ADDRESS_LOCATION_X_MIN_MAX: [130, 630], // todo функциюю определяющую координаты видимой области, или картинки - карты
+  ADDRESS_LOCATION_X_MIN_MAX: [130, 630],
   ADDRESS_LOCATION_Y_MIN_MAX: [130, 630],
   OFFER_TITLE: [`Большая уютная квартира`, `Маленькая неуютная квартира`, `Огромный прекрасный дворец`, `Маленький ужасный дворец`, `Красивый гостевой домик`, `Некрасивый негостеприимный домик`, `Уютное бунгало далеко от моря`, `Неуютное бунгало по колено в воде`],
+  OFFER_CURRENCY: `\u20BD`, // `\u20BD` -> ₽  `\u0024` - $
   OFFER_PRICE_MIN_MAX: [1000, 1000000],
   OFFER_TYPE: [`palace`, `flat`, `house`, `bungalo`],
   OFFER_ROOMS_MIN_MAX: [1, 5],
   OFFER_GUESTS_MIN_MAX: [2, 10],
   OFFER_CHECKIN: [`12:00,`, `13:00`, `14:00`],
-  OFFER_CHECKOUT: [`12:00,`, `13:00`, `14:00`], // todo уточнить
+  OFFER_CHECKOUT: [`12:00,`, `13:00`, `14:00`],
   OFFER_FEATURES: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
-  OFFER_DESCRIPTION: ``,
-  OFFER_FOTOS: [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`],
-  LOCATION_X_MIN_MAX: [130, 630], // todo ФУНКЦИЮ -> Значение ограничено размерами блока, в котором перетаскивается метка.
-  LOCATION_Y_MIN_MAX: [130, 630]
+  OFFER_DESCRIPTION: `В ТЗ пустая строка`,
+  OFFER_PHOTOS: [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`],
+  // LOCATION_X_MIN_MAX: [130, 630],
+  LOCATION_Y_MIN_MAX: [130, 630],
+  PIN_WIDTH: 50, // ширина метки объвления (пина)
+  PIN_HEIGHT: 70, // высота метки объвления (пина)
+};
+
+let mapClass = document.querySelector(`.map`);
+let pin = document.querySelector(`#pin`);
+let mapPins = document.querySelector(`.map__pins`);
+let mapCard = document.querySelector(`#card`);
+// создадим словарь для перевода | излишне, можно сразу этот объект добавить в dataAd вместо OFFER_TYPE, но так по ТЗ
+let APPARTMENT_TYPES = {
+  flat: `Квартира`,
+  bungalo: `Бунгало`,
+  house: `Дом`,
+  palace: `Дворец`
 };
 
 /**
- * Функция-конструктор объекта Ad
+ * Функция-конструктор объекта ad
  */
-function Ad() {
+function GenerateAd() {
   this.author = {avatar: `img/avatars/user0${getRandomInRange(1, 8)}.png`};
+  this.location = {
+    x: setRandomPinPositionX(),
+    y: getRandomInRange(dataAd.ADDRESS_LOCATION_Y_MIN_MAX[0], dataAd.LOCATION_Y_MIN_MAX[1]),
+  };
   this.offer = {
     title: getRandomElement(dataAd.OFFER_TITLE),
-    adress: `${getRandomInRange(dataAd.LOCATION_X_MIN_MAX[0], dataAd.LOCATION_X_MIN_MAX[1])}, ${getRandomInRange(dataAd.LOCATION_Y_MIN_MAX[0], dataAd.LOCATION_Y_MIN_MAX[1])}`,
+    // adress: `${getRandomInRange(dataAd.LOCATION_X_MIN_MAX[0], dataAd.LOCATION_X_MIN_MAX[1])}, ${getRandomInRange(dataAd.LOCATION_Y_MIN_MAX[0], dataAd.LOCATION_Y_MIN_MAX[1])}`,
+    adress: `${this.location.x},${this.location.y}`,
     price: getRandomInRange(dataAd.OFFER_PRICE_MIN_MAX[0], dataAd.OFFER_PRICE_MIN_MAX[1]),
     type: getRandomElement(dataAd.OFFER_TYPE),
     rooms: getRandomInRange(dataAd.OFFER_ROOMS_MIN_MAX[0], dataAd.OFFER_ROOMS_MIN_MAX[1]),
@@ -36,12 +57,9 @@ function Ad() {
     // getRandomInRange(1, dataAd.OFFER_FEATURES.length) -> случайное кол-во опций "WiFi, TV, .."
     // shuffleArray(dataAd.OFFER_FEATURES) -> перемешать массив и создать новый
     description: dataAd.OFFER_DESCRIPTION,
-    photos: shuffleArray(dataAd.OFFER_FOTOS, false),
+    photos: shuffleArray(dataAd.OFFER_PHOTOS, false),
   };
 }
-
-let ad = new Ad();
-
 
 /**
  * Функция возвращает массив со случайно перемешанными элементами
@@ -89,3 +107,127 @@ function getRandomElement(array) {
   let randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
+
+/**
+ * Функция переключает карту из неактивного состояния в активное и  наоборот
+ * @param {boolean} focus
+ */
+function setMapFocus(focus) {
+  if (focus) {
+    mapClass.classList.remove(`map--faded`);
+  } else {
+    mapClass.classList.add(`map--faded`);
+  }
+}
+
+/**
+ * Функция принимает номер текущего объявления, создает клон метки и возвращает
+ * @param {number} i
+ * @return {Node}
+ */
+function createPinClone(i) {
+  let pinClone = pin.content.cloneNode(true);
+  // pinClone.querySelector(`.map__pin`).style = `left: 400px; top: 400px;`;
+  pinClone.querySelector(`.map__pin`).style.left = adArray[i].location.x + `px`;
+  pinClone.querySelector(`.map__pin`).style.top = adArray[i].location.y + `px`;
+  pinClone.querySelector(`img`).src = adArray[i].author.avatar;
+  pinClone.querySelector(`img`).alt = adArray[i].offer.title;
+  return pinClone;
+}
+
+/**
+ * Отрисовка меток объявлений на карте
+ */
+function renderPin() {
+  let fragment = document.createDocumentFragment();
+  for (let i = 0; i < dataAd.COUNT; i++) {
+    fragment.appendChild(createPinClone(i));
+  }
+  mapPins.appendChild(fragment);
+}
+
+/**
+ * Функция возвращает текущие координаты и размеры HTML элемента относительно окна браузера
+ * Element.getBoundingClientRect() method returns the size of an element and its position relative to the viewport.
+ * @param {object} element
+ * @return {ClientRect | DOMRect}
+ */
+function getMapPosition(element) {
+  return element.getBoundingClientRect();
+}
+
+/**
+ * Функция генерирует случаюную позициию метки на карте по оси X
+ * размеры метки 50*70px, значит острый конец указывает на +25px по X, +70px по Y
+ * @return {number}
+ */
+function setRandomPinPositionX() {
+  let mapWidth = getMapPosition(mapClass).width; // получим текущую ширину карты
+  let maxX = mapWidth - dataAd.PIN_WIDTH; // вычтим ширину пина, т.к. справа пин не должен вылезти за карту
+  return getRandomInRange(0, maxX); // получим случайную координату по оси X в пределах карты
+}
+
+/**
+ * Генеририрует карточку объявления в соответствии с шаблоном
+ * На основе первого по порядку элемента из сгенерированного массива
+ * и шаблона .map__card создайте DOM-элемент объявления, заполните его
+ * данными из объекта и вставьте полученный DOM-элемент
+ * в блок .map перед блоком .map__filters-container:
+ * @param {number} i
+ */
+function renderMapCard(i) {
+  let fragment = document.createDocumentFragment();
+  let cloneMapCard = mapCard.content.cloneNode(true);
+  cloneMapCard.firstElementChild.src = adArray[i].author.avatar;
+  cloneMapCard.querySelector(`.popup__title`).textContent = adArray[i].offer.title;
+  cloneMapCard.querySelector(`.popup__text--address`).textContent = adArray[i].offer.adress;
+  cloneMapCard.querySelector(`.popup__text--price`).textContent = `${adArray[i].offer.price} ${dataAd.OFFER_CURRENCY}/ночь`;
+  cloneMapCard.querySelector(`.popup__type`).textContent = APPARTMENT_TYPES[adArray[i].offer.type]; // APPARTMENT_TYPES возьмет русский вариант слова
+  cloneMapCard.querySelector(`.popup__text--capacity`).textContent = `${adArray[i].offer.rooms} комнат(ы) для ${adArray[i].offer.guest} гостей`; // todo - обработка окончаний - 1 комнат(ы) для 3 гостей
+  cloneMapCard.querySelector(`.popup__text--time`).textContent = `Заезд после ${adArray[i].offer.checkin}, выезд ${adArray[i].offer.checkout}`;
+
+  // получим коллекцию объектов, т.е. все теги <li> в <ul class="popup__features"> | <li class="popup__feature popup__feature--wifi"></li>
+  let nodeList = cloneMapCard.querySelector(`.popup__features`).querySelectorAll(`.popup__feature`);
+  let liCalssName;
+  let liCalssNameEnd; // Все что в имени класса после `popup__feature popup__feature--`, например `WiFi`
+  // пройдемся по всем объектам масива (коллекции <li>)
+  nodeList.forEach(function (item) {
+    liCalssName = item.className;
+    liCalssNameEnd = liCalssName.substr(31);
+    // Если в объявлении adArray[i], в массиве features нет текущей опции (WiFi и т.д), то удалим <li>
+    if (!(adArray[i].offer.features.some((elem) => elem === liCalssNameEnd))) {
+      item.remove();
+    }
+  });
+  cloneMapCard.querySelector(`.popup__description`).textContent = `${adArray[i].offer.description}`;
+
+  // фото
+  let divFotoColection = cloneMapCard.querySelector(`.popup__photos`);
+  adArray[i].offer.photos.forEach(function (item, j) {
+    if (j > 0) { // если фотка не одна (а в html шаблоне, только один тег <img>), добавим еще один тег <img>
+      divFotoColection.appendChild(divFotoColection.querySelector(`img`).cloneNode(true));
+    }
+    divFotoColection.querySelector(`img`).src = item;
+  });
+  // автар
+  cloneMapCard.querySelector(`.popup__avatar`).src = adArray[i].author.avatar;
+
+  // отрисовка клона фрагмента
+  fragment.appendChild(cloneMapCard);
+  mapClass.appendChild(fragment);
+}
+
+
+/**
+ * Гененрируем массив объявлений
+ * @type {Array}
+ */
+let adArray = [];
+for (let i = 0; i < dataAd.COUNT; i++) {
+  adArray.push(new GenerateAd());
+}
+
+setMapFocus(true);
+renderPin();
+renderMapCard(0); // todo карточка должна вызываться определенного объявления по клику/ для теста вызываем adArray[0]
+
