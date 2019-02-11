@@ -186,22 +186,31 @@ function renderMapCard(i) {
   cloneMapCard.querySelector(`.popup__text--capacity`).textContent = `${adArray[i].offer.rooms} комнат(ы) для ${adArray[i].offer.guest} гостей`; // todo - обработка окончаний - 1 комнат(ы) для 3 гостей
   cloneMapCard.querySelector(`.popup__text--time`).textContent = `Заезд после ${adArray[i].offer.checkin}, выезд ${adArray[i].offer.checkout}`;
 
-  // получим коллекцию объектов, т.е. все теги <li> в <ul class="popup__features"> | <li class="popup__feature popup__feature--wifi"></li>
+  /**
+   * Опции | В список .popup__features выведите все доступные удобства (опции)  в объявлении
+   * получим коллекцию объектов, т.е. все теги <li> в <ul class="popup__features"> | <li class="popup__feature popup__feature--wifi"></li>
+   */
   let nodeList = cloneMapCard.querySelector(`.popup__features`).querySelectorAll(`.popup__feature`);
-  let liCalssName;
-  let liCalssNameEnd; // Все что в имени класса после `popup__feature popup__feature--`, например `WiFi`
+  let liClassName;
+  let liClassNameEnd; // Все что в имени класса после `popup__feature popup__feature--`, например `WiFi`
   // пройдемся по всем объектам масива (коллекции <li>)
   nodeList.forEach(function (item) {
-    liCalssName = item.className;
-    liCalssNameEnd = liCalssName.substr(31);
+    liClassName = item.className;
+    liClassNameEnd = liClassName.substr(31);
     // Если в объявлении adArray[i], в массиве features нет текущей опции (WiFi и т.д), то удалим <li>
-    if (!(adArray[i].offer.features.some((elem) => elem === liCalssNameEnd))) {
+    if (!(adArray[i].offer.features.some((elem) => elem === liClassNameEnd))) {
       item.remove();
     }
   });
+
+  // Описание | В блок .popup__description выведите описание объекта
   cloneMapCard.querySelector(`.popup__description`).textContent = `${adArray[i].offer.description}`;
 
-  // фото
+  /**
+   * Фото | В блок .popup__photos выведите все фотографии из списка offer.photos.
+   * Каждая из строк массива photos должна записываться как src соответствующего изображения.
+   * @type {Element}
+   */
   let divFotoColection = cloneMapCard.querySelector(`.popup__photos`);
   adArray[i].offer.photos.forEach(function (item, j) {
     if (j > 0) { // если фотка не одна (а в html шаблоне, только один тег <img>), добавим еще один тег <img>
@@ -209,7 +218,11 @@ function renderMapCard(i) {
     }
     divFotoColection.querySelector(`img`).src = item;
   });
-  // автар
+
+  /**
+   *   Автар | Замените src у аватарки пользователя — изображения,
+   *   которое записано в .popup__avatar — на значения поля author.avatar отрисовываемого объекта.
+   */
   cloneMapCard.querySelector(`.popup__avatar`).src = adArray[i].author.avatar;
 
   // отрисовка клона фрагмента
