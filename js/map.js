@@ -240,7 +240,35 @@ for (let i = 0; i < dataAd.COUNT; i++) {
   adArray.push(new GenerateAd());
 }
 
-setMapFocus(true);
-renderPin();
-renderMapCard(0); // todo карточка должна вызываться определенного объявления по клику/ для теста вызываем adArray[0]
+/**
+ *  ------------------------------------- module4-task1
+ */
 
+/**
+ *  Возвращаем пока карту в неактивный режим и комментируем рендер меток
+ */
+// setMapFocus(true);
+// renderPin();
+// renderMapCard(0); // todo карточка должна вызываться определенного объявления по клику/ для теста вызываем adArray[0]
+
+/**
+ * Функция активирует\дезактивирует поля формы добавления объявления и саму форму
+ * Согласно ТЗ, поля формы должны быть неактивны в исходном состоянии.
+ * В разметке проекта поля активны,  * поэтому их нужно отключить,
+ * т.е. добавить через DOM-операции или самим полям или fieldset которые их содержат, атрибут disabled.
+ * @param {boolean} focus
+ */
+let setFormFocus = function (focus) {
+  let form = document.querySelector(`.ad-form`); // выберем форму
+  if (focus) {
+    form.classList.remove(`ad-form--disabled`);
+  } else {
+    form.classList.add(`ad-form--disabled`);
+  }
+  form = form.querySelectorAll(`fieldset`); // запишем в переменну массив HTML элементов <fieldset></fieldset>
+  form.forEach(function (item) {
+    item.disabled = !focus; // каждому элементу установим или удадим атрибут disabled
+  });
+};
+
+// setFormFocus(true);
