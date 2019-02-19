@@ -1,4 +1,9 @@
 /* global document: false */
+let KEY_CODE = {
+  ENTER: 13,
+  ESC: 27
+};
+
 let dataAd = {
   COUNT: 8,
   AVATAR_NUM_MIN_MAX: [1, 8],
@@ -231,6 +236,9 @@ function renderMapCard(i) {
   // отрисовка клона фрагмента
   fragment.appendChild(cloneMapCard);
   mapClass.appendChild(fragment);
+  // добавляем обработчики на закрытие окна popup
+  mapClass.querySelector(`.popup__close`).addEventListener(`click`, closePopupCard);
+  document.addEventListener(`keydown`, popupEscPressHandler);
 }
 
 /**
@@ -265,9 +273,10 @@ let setFormFocus = function (focus) {
     item.disabled = !focus; // каждому элементу установим или удадим атрибут disabled
   });
 };
+setFormFocus(false);
 
 /**
- *  Первое перетаскивание метки переводит страницу в активный режим.
+ *  Первое перетаскивание главной метки переводит страницу в активный режим.
  *  Любое перетаскивание состоит из трёх фаз: захвата элемента, его перемещения и отпускания элемента.
  *  На данном этапе нам достаточно описать реакцию на третью фазу: отпускание элемента.
  *  Для этого нужно добавить обработчик события mouseup на элемент .map__pin--main.
@@ -280,6 +289,16 @@ mainPin.addEventListener(`mouseup`, function () {
   setAddress();
   renderPin();
 });
+let mainPinEnterPressHandler = function (evt) {
+  if (evt.keyCode === KEY_CODE.ENTER) {
+    setMapFocus(true);
+    setFormFocus(true);
+    setAddress();
+    renderPin();
+  }
+};
+mainPin.addEventListener(`keydown`, mainPinEnterPressHandler);
+
 
 /**
  *  Функция заполнение поля формы  "Адрес"
@@ -344,7 +363,7 @@ function setAddress() {
  */
 
 /**
- * Обработчик - клик - на метки в <div class="map__pins">
+ * Обработчик - клик - на метки объявлений в <div class="map__pins">
  * Каждый <button class="map__pin"> содержит в себе <img>. И клик может быть как по <button>, так и по <img>.
  * Поэтому проверяем есть ли у элемента (ИЛИ его родителя) атрибут id
  */
@@ -358,5 +377,28 @@ mapPins.addEventListener(`click`, function (evt) {
     return;
   }
   // console.log(`кликнули по метке объявления c id = ${id}`);
+  // Удалить предыдущий popup и показать новый
+  closePopupCard();
   renderMapCard(id);
 });
+
+/**
+ * Функция закрывает всплывающее окно с карточкой объявления, если оно открыто
+ * И удаляет обработчик на Esc
+ */
+let closePopupCard = function () {
+  if (mapClass.querySelector(`.popup`)) {
+    mapClass.querySelector(`.popup`).remove();
+    document.removeEventListener(`keydown`, popupEscPressHandler);
+  }
+};
+
+/**
+ *
+ * @param evt
+ */
+let popupEscPressHandler = function (evt) {
+  if (evt.keyCode === KEY_CODE.ESC) {
+    closePopupCard();
+  }
+};
