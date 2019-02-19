@@ -8,7 +8,6 @@
   <title>Кексобукинг</title>
 </head>
 <body>
-
   <main>
     <div class="promo">
       <h1 class="promo__title visually-hidden">Keksobooking. Кексы по соседству</h1>
@@ -80,7 +79,7 @@
         </form>
       </div>
     </section>
-
+    <p class="text"><b>Текущие координаты курсора:</b> <span id="xy">x = 176, y = 616</span></p>
     <!-- Форма объявления -->
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
@@ -249,6 +248,34 @@
       <button class="error__button" href="#">Попробовать снова</button>
     </div>
   </template>
+  <!--Временно, для тестирования.
+  Данный скрипт позволяет выводить координаты курсора как в statusbar-е, так и в заданном месте странички.
+  Для получения текущих координат курсора на экране сайта вставьте на свою страничку следующий скрипт:
+  http://usefulscript.ru/cursor_position.php-->
+
 <script src="js/map.js"></script>
+  <script type="text/javascript">
+    ns4 = (document.layers)? true:false
+    ie4 = (document.all)? true:false
+
+    function init() {
+      if (ns4) {document.captureEvents(Event.MOUSEMOVE);}
+      document.onmousemove=mousemove;
+    }
+    function mousemove(event) {
+      var mouse_x = y = 0;
+      if (document.attachEvent != null) {
+        mouse_x = window.event.clientX;
+        mouse_y = window.event.clientY;
+      } else if (!document.attachEvent && document.addEventListener) {
+        mouse_x = event.clientX;
+        mouse_y = event.clientY;
+      }
+      status="x = " + mouse_x + ", y = " + mouse_y;
+      document.getElementById('xy').innerHTML = "x = " + mouse_x + ", y = " + mouse_y;
+    }
+    init()
+  </script>
+
 </body>
 </html>
