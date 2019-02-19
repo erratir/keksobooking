@@ -37,7 +37,7 @@ let APPARTMENT_TYPES = {
 let mapClass = document.querySelector(`.map`);
 let pin = document.querySelector(`#pin`);
 let mapPins = document.querySelector(`.map__pins`);
-let mapCard = document.querySelector(`#card`);
+let popupCard = document.querySelector(`#card`);
 let mainPin = document.querySelector(`.map__pin--main`);
 
 /**
@@ -183,9 +183,9 @@ function setRandomPinPositionX() {
  * в блок .map перед блоком .map__filters-container:
  * @param {number} i
  */
-function renderMapCard(i) {
+function openPopupCard(i) {
   let fragment = document.createDocumentFragment();
-  let cloneMapCard = mapCard.content.cloneNode(true);
+  let cloneMapCard = popupCard.content.cloneNode(true);
   cloneMapCard.firstElementChild.src = adArray[i].author.avatar;
   cloneMapCard.querySelector(`.popup__title`).textContent = adArray[i].offer.title;
   cloneMapCard.querySelector(`.popup__text--address`).textContent = adArray[i].offer.adress;
@@ -236,10 +236,23 @@ function renderMapCard(i) {
   // отрисовка клона фрагмента
   fragment.appendChild(cloneMapCard);
   mapClass.appendChild(fragment);
+
   // добавляем обработчики на закрытие окна popup
-  mapClass.querySelector(`.popup__close`).addEventListener(`click`, closePopupCard);
-  document.addEventListener(`keydown`, popupEscPressHandler);
+  mapClass.querySelector(`.popup__close`).addEventListener(`click`, closePopupCard); // клик по крестику попапа
+  document.addEventListener(`keydown`, popupEscPressHandler); // Esc
 }
+
+/**
+ * Функция закрывает всплывающее окно с карточкой объявления, если оно открыто
+ * И удаляет обработчик на Esc
+ */
+let closePopupCard = function () {
+  if (mapClass.querySelector(`.popup`)) {
+    mapClass.querySelector(`.popup`).remove();
+    document.removeEventListener(`keydown`, popupEscPressHandler);
+  }
+};
+
 
 /**
  * Гененрируем массив объявлений
@@ -298,7 +311,6 @@ let mainPinEnterPressHandler = function (evt) {
   }
 };
 mainPin.addEventListener(`keydown`, mainPinEnterPressHandler);
-
 
 /**
  *  Функция заполнение поля формы  "Адрес"
@@ -360,10 +372,11 @@ function setAddress() {
  * _____________________________________________________________________
  * Добавим каждой метке ID, для этого дополним ф-ю createPinClone(i):
  * pinClone.querySelector(`.map__pin`).setAttribute(`id`, `${i}`);
+ * И используем делегирование, добавиви обработчик на родительский див, и проверяем в обработчике ID у элемента
  */
 
 /**
- * Обработчик - клик - на метки объявлений в <div class="map__pins">
+ * Обработчик - клик - на любой из меткок объявлений - открытие popupCard
  * Каждый <button class="map__pin"> содержит в себе <img>. И клик может быть как по <button>, так и по <img>.
  * Поэтому проверяем есть ли у элемента (ИЛИ его родителя) атрибут id
  */
@@ -379,23 +392,13 @@ mapPins.addEventListener(`click`, function (evt) {
   // console.log(`кликнули по метке объявления c id = ${id}`);
   // Удалить предыдущий popup и показать новый
   closePopupCard();
-  renderMapCard(id);
+  openPopupCard(id);
 });
 
 /**
- * Функция закрывает всплывающее окно с карточкой объявления, если оно открыто
- * И удаляет обработчик на Esc
- */
-let closePopupCard = function () {
-  if (mapClass.querySelector(`.popup`)) {
-    mapClass.querySelector(`.popup`).remove();
-    document.removeEventListener(`keydown`, popupEscPressHandler);
-  }
-};
-
-/**
- *
- * @param evt
+ * Обработчик - Esc - при открытом окне popupCard - закрыть
+ * Вызывается в функции открытия окна - openPopupCard(i)
+ * @param {Event} evt
  */
 let popupEscPressHandler = function (evt) {
   if (evt.keyCode === KEY_CODE.ESC) {
