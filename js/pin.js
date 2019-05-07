@@ -35,6 +35,12 @@
     for (let i = 0; i < window.data.dataAd.COUNT; i++) {
       fragment.appendChild(createPinClone(i));
     }
+
+    // удалим пины похожих объявлений (если они есть на карте) // иначе при кликах на главный пин, будут добавлятся новые пины
+    while (mapPins.querySelector(`.map__pin[id]`)) {
+      mapPins.removeChild(mapPins.querySelector(`.map__pin[id]`));
+    }
+
     mapPins.appendChild(fragment);
   };
 
