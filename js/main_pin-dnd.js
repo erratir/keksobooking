@@ -4,6 +4,9 @@
  * Модуль который отвечает за перетаскивание (Drag and drop) главного пина (метки объявления) по карте
  *
  * https://developer.mozilla.org/ru/docs/Web/Guide/HTML/Drag_and_drop
+ * https://learn.javascript.ru/drag-and-drop-objects
+ * https://learn.javascript.ru/coordinates
+ * https://ru.stackoverflow.com/questions/663759/%D0%9A%D0%B0%D0%BA-%D0%BA%D0%BE%D1%80%D1%80%D0%B5%D0%BA%D1%82%D0%BD%D0%BE-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B8%D1%82%D1%8C-%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C-dragndrop
  */
 
 /**
@@ -29,35 +32,70 @@
 
 (function () {
 
+  let mapClass = document.querySelector(`.map`);
   let mainPin = document.querySelector(`.map__pin--main`);
 
   //  Только при вызове обработчика mousedown - обработчики mousemove и mouseup должны добавляться
   mainPin.addEventListener(`mousedown`, function (evt) {
     evt.preventDefault();
+    let dragged = false;
 
-    let startLocation = {
-      x: evt.clientX,
-      y: evt.clientY
+    let mapLocation = mapClass.getBoundingClientRect(); // координаты карты относительно окна браузера
+
+    /**
+     * Лимиты координат (область карты) за которые нельзя вытащить mainPin
+     * у mainPin position: relative
+     */
+    let limitLocation = {
+      top: mapLocation.top,
+      right: mapLocation.width - mainPin.offsetWidth,
+      bottom: mapLocation.height - mainPin.offsetHeight,
+      left: 0
     };
 
-    let dragged = false;
+    let startLocation = { // начальные координаты mainPin
+      x: evt.clientX,
+      y: evt.clientY,
+    };
 
     let onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
       dragged = true;
 
-      let shift = {
+      let shift = { // смещение относительно стартовых координат
         x: startLocation.x - moveEvt.clientX,
         y: startLocation.y - moveEvt.clientY
       };
 
-      startLocation = {
+      startLocation = { // перезаписываем стартовые координаты
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
 
-      mainPin.style.top = `${mainPin.offsetTop - shift.y}px`;
-      mainPin.style.left = `${mainPin.offsetLeft - shift.x}px`;
+      let newLocation = { // координаты mainPin относительно родителя (map)
+        x: mainPin.offsetLeft - shift.x,
+        y: mainPin.offsetTop - shift.y
+      };
+
+      //  ограничение движения mainPin по X ( в пределах карты)
+      if (newLocation.x < limitLocation.left) {
+        newLocation.x = limitLocation.left;
+      } else if (newLocation.x > limitLocation.right) {
+        newLocation.x = limitLocation.right;
+      }
+
+      //  ограничение движения mainPin по Y ( в пределах карты)
+      if (newLocation.y < limitLocation.top) {
+        newLocation.y = limitLocation.top;
+      } else if (newLocation.y > limitLocation.bottom) {
+        newLocation.y = limitLocation.bottom;
+      }
+
+      relocate();
+      function relocate() {
+        mainPin.style.left = `${newLocation.x}px`;
+        mainPin.style.top = `${newLocation.y}px`;
+      }
     };
 
     let onMouseUp = function (upEvt) {
