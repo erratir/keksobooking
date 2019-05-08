@@ -7,6 +7,8 @@
 
   let mainPin = document.querySelector(`.map__pin--main`);
   let mapClass = document.querySelector(`.map`);
+
+  let buttonSubmit = document.querySelector(`.ad-form__submit`);
   let successPopupTemplate = document.querySelector(`#success`);
   let main = document.querySelector(`main`);
   let errorPopupTemplate = document.querySelector(`#error`);
@@ -142,8 +144,24 @@
     errorButton.addEventListener(`click`, closeErrorMessage);
   };
 
+  // Обработчик на кнопку "Опубликовать" - отправка данных на сервер
+  buttonSubmit.addEventListener(`click`, function (evt) {
+    evt.preventDefault();
+    let form = document.querySelector(`body > main > section.notice > form`);
+    window.backend.postData(`https://js.dump.academy/keksobooking`, new window.FormData(form)
+    ).then(function (response) {
+      if (response) {
+        // здесь обрабатываем json который вернул сервер (response)
+        window.console.log(response);
+        // todo передать в showSuccessMessage успешный response и отобразить
+        showSuccessMessage();
+      }
+    });
+  });
+
   window.form = {
     setFormFocus,
     setAddress,
+    showSubmitError,
   };
 })();
