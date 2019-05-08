@@ -46,7 +46,7 @@
     cloneMapCard.querySelector(`.popup__text--address`).textContent = window.data.adArray[i].offer.adress;
     cloneMapCard.querySelector(`.popup__text--price`).textContent = `${window.data.adArray[i].offer.price} ${window.data.dataAd.OFFER_CURRENCY}/ночь`;
     cloneMapCard.querySelector(`.popup__type`).textContent = window.data.APARTMENT_TYPES[window.data.adArray[i].offer.type]; // window.data.APARTMENT_TYPES возьмет русский вариант слова
-    cloneMapCard.querySelector(`.popup__text--capacity`).textContent = `${window.data.adArray[i].offer.rooms} комнат(ы) для ${window.data.adArray[i].offer.guest} гостей`; // todo - обработка окончаний - 1 комнат(ы) для 3 гостей
+    cloneMapCard.querySelector(`.popup__text--capacity`).textContent = `${window.data.adArray[i].offer.rooms} комнат(ы) для ${window.data.adArray[i].offer.guests} гостей`; // todo - обработка окончаний - 1 комнат(ы) для 3 гостей
     cloneMapCard.querySelector(`.popup__text--time`).textContent = `Заезд после ${window.data.adArray[i].offer.checkin}, выезд ${window.data.adArray[i].offer.checkout}`;
 
     /**

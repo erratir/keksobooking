@@ -70,7 +70,7 @@
       price: window.utils.getRandomInRange(window.data.dataAd.OFFER_PRICE_MIN_MAX[0], window.data.dataAd.OFFER_PRICE_MIN_MAX[1]),
       type: window.utils.getRandomElement(window.data.dataAd.OFFER_TYPE),
       rooms: window.utils.getRandomInRange(window.data.dataAd.OFFER_ROOMS_MIN_MAX[0], window.data.dataAd.OFFER_ROOMS_MIN_MAX[1]),
-      guest: window.utils.getRandomInRange(window.data.dataAd.OFFER_GUESTS_MIN_MAX[0], window.data.dataAd.OFFER_GUESTS_MIN_MAX[1]),
+      guests: window.utils.getRandomInRange(window.data.dataAd.OFFER_GUESTS_MIN_MAX[0], window.data.dataAd.OFFER_GUESTS_MIN_MAX[1]),
       checkin: window.utils.getRandomElement(window.data.dataAd.OFFER_CHECKIN),
       checkout: window.utils.getRandomElement(window.data.dataAd.OFFER_CHECKOUT),
       features: window.utils.shuffleArray(window.data.dataAd.OFFER_FEATURES, window.utils.getRandomInRange(1, window.data.dataAd.OFFER_FEATURES.length)),
@@ -82,14 +82,26 @@
     };
   };
 
-
   /**
-   * Гененрируем массив объявлений
-   * @type {Array}
+   * Функция получает данные о объявлениях с сервера.
+   * В случае ошибки используются моковые данные (масив объявлений adArray конструируются из dataAd)
    */
-  for (let i = 0; i < window.data.dataAd.COUNT; i++) {
-    window.data.adArray.push(new GenerateAd());
-  }
+  let getAdJson = function () {
 
+    window.backend.getData()
+      .then(function (data) {
+        if (data) {
+          window.data.adArray = data; // В массив adArray записываем полученные данные с сервера (массив объектов объявлений)
+        } else {
+          // В случае, если getData() вернул null (ответ сервера ==! 200), генерируем массиы объявлений из моковых данных
+          for (let i = 0; i < window.data.dataAd.COUNT; i++) {
+            window.data.adArray.push(new GenerateAd());
+            // console.log(window.data.adArray);
+          }
+        }
+        // todo поскольку запрос к серверу асинхронный отображение объявлений на карте запускать отсюда renderPin(); ?
+      });
+  };
 
+  getAdJson();
 })();
