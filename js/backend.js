@@ -26,15 +26,16 @@
         body: formData,
       }).then(function (response) {
         if (response.status !== 200) {
-          // TODO Всплывающее окно с ошибкой
-          window.alert(`Похоже, возникла проблема отправки данных на сервер. \nStatus Code: ${response.status}`);
-          // errorPopup(`Looks like there was a problem. Status Code: ${response.status}`);
+          // окно с ошибкой `Looks like there was a problem. Status Code: ${response.status}`
+          // window.alert(`Похоже, возникла проблема отправки данных на сервер. \nStatus Code: ${response.status}`);
+          // window.form.showSubmitError(`Похоже, возникла проблема отправки данных на сервер. \nStatus Code: ${response.status}`);
           return null;
         }
         return response.json();
       }).catch(function (error) {
-        // TODO Всплывающее окно с ошибкой
-        window.alert(`Ошибка отправки данных на сервер: ${error.message}. Повторите попытку позже`);
+        // окно с ошибкой
+        // window.alert(`Ошибка отправки данных на сервер: ${error.message}. Повторите попытку позже`);
+        // window.form.showSubmitError(`Ошибка отправки данных на сервер: ${error.message}. Повторите попытку позже`);
       });
     },
   };

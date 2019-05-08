@@ -43,7 +43,7 @@
     let cloneMapCard = popupCard.content.cloneNode(true);
     cloneMapCard.firstElementChild.src = window.data.adArray[i].author.avatar;
     cloneMapCard.querySelector(`.popup__title`).textContent = window.data.adArray[i].offer.title;
-    cloneMapCard.querySelector(`.popup__text--address`).textContent = window.data.adArray[i].offer.adress;
+    cloneMapCard.querySelector(`.popup__text--address`).textContent = window.data.adArray[i].offer.address;
     cloneMapCard.querySelector(`.popup__text--price`).textContent = `${window.data.adArray[i].offer.price} ${window.data.dataAd.OFFER_CURRENCY}/ночь`;
     cloneMapCard.querySelector(`.popup__type`).textContent = window.data.APARTMENT_TYPES[window.data.adArray[i].offer.type]; // window.data.APARTMENT_TYPES возьмет русский вариант слова
     cloneMapCard.querySelector(`.popup__text--capacity`).textContent = `${window.data.adArray[i].offer.rooms} комнат(ы) для ${window.data.adArray[i].offer.guests} гостей`; // todo - обработка окончаний - 1 комнат(ы) для 3 гостей

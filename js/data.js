@@ -66,7 +66,7 @@
     this.offer = {
       title: window.utils.getRandomElement(window.data.dataAd.OFFER_TITLE),
       // adress: `${window.utils.getRandomInRange(window.data.dataAd.LOCATION_X_MIN_MAX[0], window.data.dataAd.LOCATION_X_MIN_MAX[1])}, ${window.utils.getRandomInRange(window.data.dataAd.LOCATION_Y_MIN_MAX[0], window.data.dataAd.LOCATION_Y_MIN_MAX[1])}`,
-      adress: `${this.location.x},${this.location.y}`,
+      address: `${this.location.x},${this.location.y}`,
       price: window.utils.getRandomInRange(window.data.dataAd.OFFER_PRICE_MIN_MAX[0], window.data.dataAd.OFFER_PRICE_MIN_MAX[1]),
       type: window.utils.getRandomElement(window.data.dataAd.OFFER_TYPE),
       rooms: window.utils.getRandomInRange(window.data.dataAd.OFFER_ROOMS_MIN_MAX[0], window.data.dataAd.OFFER_ROOMS_MIN_MAX[1]),

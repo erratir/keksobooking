@@ -16,7 +16,7 @@
    * @param {boolean} focus
    */
   let setFormFocus = function (focus) {
-    let form = document.querySelector(`.ad-form`); // выберем форму
+    let form = document.querySelector(`.ad-form`);
     if (focus) {
       form.classList.remove(`ad-form--disabled`);
     } else {
@@ -57,7 +57,7 @@
    *  Обратится к псевдоэлементу в JS можно только через добавление\удаление классов, поэтому пока возьмем числовое значение 22-6 = 18px;
    *  todo: вынести 18 в константу или найти способ обращаться к псевдоэлементу
    */
-  function setAddress() {
+  let setAddress = function () {
     let mainPinPosition = window.utils.getElementPosition(mainPin); // Позиция главной метки в координатах окна браузера
     let mainPinX = mainPinPosition.x; // получим текущую координату Х для главной метки
     let mapX = window.utils.getElementPosition(mapClass).x; // получим текущую координату Х для карты
@@ -69,7 +69,7 @@
     mainPinY += mainPinPosition.height + 18;
     // запишем координаты метки в поле формы #address
     document.querySelector(`#address`).value = `x = ${Math.round(mainPinX)}, y = ${Math.round(mainPinY)}`;
-  }
+  };
 
   window.form = {
     setFormFocus,
