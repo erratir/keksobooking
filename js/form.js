@@ -7,6 +7,8 @@
 
   let mainPin = document.querySelector(`.map__pin--main`);
   let mapClass = document.querySelector(`.map`);
+  let successPopupTemplate = document.querySelector(`#success`);
+  let main = document.querySelector(`main`);
 
   /**
    * Функция активирует\дезактивирует поля формы добавления объявления и саму форму
@@ -69,6 +71,37 @@
     mainPinY += mainPinPosition.height + 18;
     // запишем координаты метки в поле формы #address
     document.querySelector(`#address`).value = `x = ${Math.round(mainPinX)}, y = ${Math.round(mainPinY)}`;
+  };
+
+  /**
+   * Функция отображает окно `.success` в случае успешной загрузки данных формы на сервер
+   */
+  let showSuccessMessage = function () {
+    let cloneSuccessPopupTemplate = successPopupTemplate.content.cloneNode(true);
+    let succesPopup = cloneSuccessPopupTemplate.querySelector(`.success`);
+
+    main.appendChild(cloneSuccessPopupTemplate);
+    let closeSuccessMessage = function () {
+      document.removeEventListener(`keydown`, handleKeyPress);
+      succesPopup.removeEventListener(`click`, closeMessageOnOutClick);
+      main.removeChild(succesPopup);
+    };
+
+    let closeMessageOnOutClick = function (evt) {
+      evt.preventDefault();
+      if (evt.target === succesPopup) {
+        closeSuccessMessage();
+      }
+    };
+
+    let handleKeyPress = function (evt) {
+      evt.preventDefault();
+      if (evt.key === `Escape`) {
+        closeSuccessMessage();
+      }
+    };
+    document.addEventListener(`keydown`, handleKeyPress);
+    succesPopup.addEventListener(`click`, closeMessageOnOutClick);
   };
 
   window.form = {
