@@ -9,6 +9,7 @@
   let mapClass = document.querySelector(`.map`);
   let successPopupTemplate = document.querySelector(`#success`);
   let main = document.querySelector(`main`);
+  let errorPopupTemplate = document.querySelector(`#error`);
 
   /**
    * Функция активирует\дезактивирует поля формы добавления объявления и саму форму
@@ -102,6 +103,43 @@
     };
     document.addEventListener(`keydown`, handleKeyPress);
     succesPopup.addEventListener(`click`, closeMessageOnOutClick);
+  };
+
+  /**
+   * Функция отображает окно `.error` в случае ошибки загрузки данных формы на сервер
+   * @param {string} message
+   */
+  let showSubmitError = function (message) {
+    let cloneErrorTemplate = errorPopupTemplate.content.cloneNode(true);
+    let errorBlock = cloneErrorTemplate.querySelector(`.error`);
+    let errorMessage = cloneErrorTemplate.querySelector(`.error__message`);
+    let errorButton = errorBlock.querySelector(`.error__button`);
+    errorMessage.textContent = message;
+
+    main.appendChild(cloneErrorTemplate);
+
+    let handleKeyPressOnError = function (evt) {
+      if (evt.key === `Escape`) {
+        closeErrorMessage();
+      }
+    };
+
+    let closeErrorMessageOnOutClick = function (evt) {
+      evt.preventDefault();
+      if (evt.target === errorBlock) {
+        closeErrorMessage();
+      }
+    };
+
+    let closeErrorMessage = function () {
+      document.removeEventListener(`keydown`, handleKeyPressOnError);
+      errorBlock.removeEventListener(`click`, closeErrorMessageOnOutClick);
+      main.removeChild(errorBlock);
+    };
+
+    document.addEventListener(`keydown`, handleKeyPressOnError);
+    errorBlock.addEventListener(`click`, closeErrorMessageOnOutClick);
+    errorButton.addEventListener(`click`, closeErrorMessage);
   };
 
   window.form = {
