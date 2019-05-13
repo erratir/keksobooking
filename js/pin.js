@@ -16,14 +16,14 @@
    * @param {number} index порядковый номер
    * @return {Node}
    */
-  let createPinClone = function (element, index) {
+  let createPinClone = function (element) {
     let pinClone = pin.content.cloneNode(true);
     // pinClone.querySelector(`.map__pin`).style = `left: 400px; top: 400px;`;
     pinClone.querySelector(`.map__pin`).style.left = element.location.x + `px`;
     pinClone.querySelector(`.map__pin`).style.top = element.location.y + `px`;
     pinClone.querySelector(`img`).src = element.author.avatar;
     pinClone.querySelector(`img`).alt = element.offer.title;
-    pinClone.querySelector(`.map__pin`).setAttribute(`id`, `${index}`);
+    pinClone.querySelector(`.map__pin`).setAttribute(`id`, `${element.id}`);
     return pinClone;
   };
 
@@ -34,8 +34,8 @@
   let renderPin = function (arr) {
     let fragment = document.createDocumentFragment();
 
-    arr.forEach(function (element, index) {
-      fragment.appendChild(createPinClone(element, index));
+    arr.forEach(function (element) {
+      fragment.appendChild(createPinClone(element));
     });
 
     // удалим пины  объявлений (если они есть на карте) // иначе при кликах на главный пин, будут добавлятся новые пины

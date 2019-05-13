@@ -100,6 +100,7 @@
   };
 
   let renderFilteredPin = function () {
+    window.card.closePopupCard();
     // console.log(adFilter());
     window.pin.renderPin(adFilter());
   };

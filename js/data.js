@@ -99,6 +99,11 @@
             // console.log(window.data.adArray);
           }
         }
+        // каждому объявлению добавим параметр id
+        window.data.adArray.forEach((element, index) => {
+          element.id = index;
+        });
+
         // todo поскольку запрос к серверу асинхронный отображение объявлений на карте запускать отсюда renderPin(); ?
       });
   };
