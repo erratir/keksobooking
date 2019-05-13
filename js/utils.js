@@ -63,5 +63,28 @@
     getElementPosition(element) {
       return element.getBoundingClientRect();
     },
+
+    /**
+     * Функция проверяет содержится ли в массиве arr1 ХОТЯБЫ ОДИН элемент массива arr2
+     * Возвращает true в случае успеха
+     * @param {Array} arr1 - Массив в котором ищем элементы массива arr2
+     * @param {Array} arr2 - Массив элементы которого ищем в массиве arr1
+     * @return {boolean}
+     */
+    comparingSomeElementsOfArrays(arr1, arr2) {
+      return arr2.some((element) => arr1.includes(element));
+    },
+
+    /**
+     * Функция проверяет содержится ли в массиве arr1 ВСЕ элементы массива arr2
+     * Возвращает true в случае успеха
+     * @param {Array} arr1 - Массив в котором ищем элементы массива arr2
+     * @param {Array} arr2 - Массив элементы которого ищем в массиве arr1
+     * @return {boolean}
+     */
+    comparingElementsOfArrays(arr1, arr2) {
+      return arr2.every((element) => arr1.includes(element));
+    }
+
   };
 })();

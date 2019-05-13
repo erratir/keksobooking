@@ -11,32 +11,34 @@
   let pin = document.querySelector(`#pin`);
 
   /**
-   * Функция принимает номер текущего объявления, создает клон метки и возвращает
-   * @param {number} i
+   * Функция принимает объект с параметрами объявления, создает клон метки и возвращает
+   * @param {object} element
+   * @param {number} index порядковый номер
    * @return {Node}
    */
-  let createPinClone = function (i) {
+  let createPinClone = function (element, index) {
     let pinClone = pin.content.cloneNode(true);
     // pinClone.querySelector(`.map__pin`).style = `left: 400px; top: 400px;`;
-    pinClone.querySelector(`.map__pin`).style.left = window.data.adArray[i].location.x + `px`;
-    pinClone.querySelector(`.map__pin`).style.top = window.data.adArray[i].location.y + `px`;
-    pinClone.querySelector(`img`).src = window.data.adArray[i].author.avatar;
-    pinClone.querySelector(`img`).alt = window.data.adArray[i].offer.title;
-    pinClone.querySelector(`.map__pin`).setAttribute(`id`, `${i}`);
+    pinClone.querySelector(`.map__pin`).style.left = element.location.x + `px`;
+    pinClone.querySelector(`.map__pin`).style.top = element.location.y + `px`;
+    pinClone.querySelector(`img`).src = element.author.avatar;
+    pinClone.querySelector(`img`).alt = element.offer.title;
+    pinClone.querySelector(`.map__pin`).setAttribute(`id`, `${index}`);
     return pinClone;
   };
 
-
   /**
    * Отрисовка меток объявлений на карте
+   * @param {Array} arr - Массив объявлений которые показать на карте
    */
-  let renderPin = function () {
+  let renderPin = function (arr) {
     let fragment = document.createDocumentFragment();
-    for (let i = 0; i < window.data.dataAd.COUNT; i++) {
-      fragment.appendChild(createPinClone(i));
-    }
 
-    // удалим пины похожих объявлений (если они есть на карте) // иначе при кликах на главный пин, будут добавлятся новые пины
+    arr.forEach(function (element, index) {
+      fragment.appendChild(createPinClone(element, index));
+    });
+
+    // удалим пины  объявлений (если они есть на карте) // иначе при кликах на главный пин, будут добавлятся новые пины
     while (mapPins.querySelector(`.map__pin[id]`)) {
       mapPins.removeChild(mapPins.querySelector(`.map__pin[id]`));
     }

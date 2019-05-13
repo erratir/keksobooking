@@ -128,7 +128,7 @@
     window.map.setMapFocus(true);
     window.form.setFormFocus(true);
     window.form.setAddress();
-    window.pin.renderPin();
+    window.pin.renderPin(window.data.adArray); // рендерим пины на основе массива исходных объявлений
   };
 
   // Энтер на главном пине
