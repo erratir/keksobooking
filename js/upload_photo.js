@@ -34,7 +34,7 @@
   });
 
   /**
-   * Загрузка фотографий объявления todo 1)доработать css блока отображения фото 2)сделать загрузку нескольких фото
+   * Загрузка фотографий объявления todo 2)сделать загрузку нескольких фото
    */
   let uploadPhoto = document.querySelector(`.ad-form__upload input[type="file"]`);
   let previewPhoto = document.querySelector(`.ad-form__photo`);
@@ -50,6 +50,7 @@
 
       let img = document.createElement(`img`);
       img.src = window.URL.createObjectURL(file);
+      img.classList.add(`ad-form__photo--element`);
       previewPhoto.appendChild(img);
 
     }
