@@ -102,7 +102,10 @@
   let renderFilteredPin = function () {
     window.card.closePopupCard();
     // console.log(adFilter());
-    window.pin.renderPin(adFilter());
+    // перерисовываем пины объявлений (с устранением дребезга)
+    window.debounce(function () {
+      window.pin.renderPin(adFilter());
+    }, 500);
   };
 
   // Обработчик на изменение состояний фильтров карты
