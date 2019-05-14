@@ -34,25 +34,32 @@
   });
 
   /**
-   * Загрузка фотографий объявления todo 2)сделать загрузку нескольких фото
+   * Загрузка фотографий объявления
+   * todo Огранитчить кол-во загружаемых изображений?
    */
-  let uploadPhoto = document.querySelector(`.ad-form__upload input[type="file"]`);
-  let previewPhoto = document.querySelector(`.ad-form__photo`);
+  let photoUpload = document.querySelector(`.ad-form__upload input[type="file"]`);
+  let photoContainer = document.querySelector(`.ad-form__photo-container`);
 
-  uploadPhoto.addEventListener(`change`, function (evt) {
+  photoUpload.addEventListener(`change`, function (evt) {
     evt.preventDefault();
-    if (uploadPhoto.files.length > 0) {
-      let file = uploadPhoto.files[0];
-      if (!file.type.match(/image.*/)) {
-        // cb(new Error(`FILE_NOT_IMAGE`));
-        return;
-      }
+    let fileList = evt.target.files;
+    if (fileList.length > 0) {
 
-      let img = document.createElement(`img`);
-      img.src = window.URL.createObjectURL(file);
-      img.classList.add(`ad-form__photo--element`);
-      previewPhoto.appendChild(img);
+      Array.from(fileList).forEach(function (file) {
+        if (!file.type.match(/image.*/)) {
+          // cb(new Error(`FILE_NOT_IMAGE`));
+          return;
+        }
 
+        let div = document.createElement(`div`);
+        div.classList.add(`ad-form__photo`);
+        let img = document.createElement(`img`);
+        img.src = window.URL.createObjectURL(file);
+        img.classList.add(`ad-form__photo--element`);
+
+        div.appendChild(img);
+        photoContainer.appendChild(div);
+      });
     }
   });
 })();
